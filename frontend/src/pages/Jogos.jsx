@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import Button from "../components/Button";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
 
 export default function Jogos() {
   const [jogos, setJogos] = useState([]);

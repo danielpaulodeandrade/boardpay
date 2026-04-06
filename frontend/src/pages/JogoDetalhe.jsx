@@ -3,7 +3,7 @@ import SaldoCard from "../components/SaldoCard";
 import JogadorCard from "../components/JogadorCard";
 import TransferModal from "../components/TransferModal";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
 
 export default function JogoDetalhe() {
   const [jogadores, setJogadores] = useState([]);

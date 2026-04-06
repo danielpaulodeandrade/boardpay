@@ -9,8 +9,9 @@ from models import Jogo, Jogador, Transacao
 
 from flask_cors import CORS
 
-# 🔥 1. CRIA APP PRIMEIRO
-app = Flask(__name__)
+# 🔥 1. CRIA APP PRIMEIRO (Apontando para a build do React)
+import os
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
 
 
 CORS(app)
@@ -30,7 +31,18 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    return {"mensagem": "BoardPay API rodando 🚀"}
+    try:
+        return app.send_static_file('index.html')
+    except Exception:
+        return {"mensagem": "BoardPay API rodando 🚀 (Mas o Frontend ainda não foi 'buildado')"}
+
+# Fallback para o React Router (se for usado no futuro) lidar com as páginas
+@app.errorhandler(404)
+def not_found(e):
+    try:
+        return app.send_static_file('index.html')
+    except Exception:
+        return {"erro": "Rota não encontrada e Frontend não embutido."}, 404
 
 
 @app.route('/jogos', methods=['POST'])
