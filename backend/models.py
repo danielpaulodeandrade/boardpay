@@ -19,6 +19,7 @@ class Jogador(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String, nullable=False)
+    avatar = db.Column(db.String, nullable=True, default='avatar1')
     saldo = db.Column(db.Integer, nullable=False)
 
     jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
