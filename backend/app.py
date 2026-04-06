@@ -68,9 +68,10 @@ def criar_jogo() -> Tuple[Response, int]:
         session.add(jogo)
         session.flush()
 
-        for nome_jogador in jogadores:
+        for jog_data in jogadores:
             jogador = Jogador(
-                nome=nome_jogador,
+                nome=jog_data.get("nome", "Sem Nome"),
+                avatar=jog_data.get("avatar", "🐶"),
                 saldo=saldo_inicial,
                 jogo_id=jogo.id
             )
@@ -114,6 +115,7 @@ def obter_jogo(jogo_id):
             {
                 "id": jogador.id,
                 "nome": jogador.nome,
+                "avatar": jogador.avatar,
                 "saldo": jogador.saldo
             }
             for jogador in jogo.jogadores
