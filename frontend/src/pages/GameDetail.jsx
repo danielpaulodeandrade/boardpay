@@ -279,7 +279,7 @@ export default function GameDetail() {
         <div className="space-y-6 animate-in fade-in slide-in-from-top-4">
           <div className="bg-slate-800 p-6 sm:p-8 rounded-[2.5rem] border border-slate-700/50 shadow-2xl space-y-4">
              <h2 className="text-sm font-black text-amber-500 uppercase tracking-widest text-center italic">{T.adminAuth}</h2>
-             <input type="password" value={adminPassInput} onChange={(e) => { setAdminPassInput(e.target.value); setAdminError(""); }} placeholder={T.adminPlaceholder} className="w-full bg-slate-900 p-5 rounded-3xl text-white text-center font-bold outline-none focus:ring-1 ring-amber-500" />
+             <input type="password" inputMode="numeric" pattern="[0-9]*" value={adminPassInput} onChange={(e) => { setAdminPassInput(e.target.value); setAdminError(""); }} placeholder={T.adminPlaceholder} className="w-full bg-slate-900 p-5 rounded-3xl text-white text-center font-bold outline-none focus:ring-1 ring-amber-500" />
              {adminError && <p className="text-red-500 text-center text-[10px] font-black animate-pulse bg-red-500/10 py-2 rounded-xl uppercase">{adminError}</p>}
              <button onClick={handleLoginGerente} className="w-full bg-amber-600 py-4 rounded-2xl text-white font-black uppercase text-xs tracking-widest shadow-xl shadow-amber-900/30">{T.adminBtn}</button>
           </div>
@@ -292,7 +292,7 @@ export default function GameDetail() {
                   <span className="text-4xl">{j.avatar}</span>
                   <span className="text-[12px] font-black text-white uppercase text-center w-full truncate opacity-60">{j.name}</span>
                   <div className="w-full space-y-2">
-                    <input type="password" maxLength={4} placeholder="PIN" className="w-full bg-slate-900 p-3 rounded-2xl text-center text-xs text-white font-black outline-none ring-1 ring-slate-700" value={playerDetail?.id === j.id ? pinInput : ""} onChange={(e) => { setPlayerDetail({id: j.id}); setPinInput(e.target.value); setLoginError(""); }} />
+                    <input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={4} placeholder="PIN" className="w-full bg-slate-900 p-3 rounded-2xl text-center text-xs text-white font-black outline-none ring-1 ring-slate-700" value={playerDetail?.id === j.id ? pinInput : ""} onChange={(e) => { setPlayerDetail({id: j.id}); setPinInput(e.target.value); setLoginError(""); }} />
                     {loginError && loginError.id === j.id && <p className="text-red-500 text-center text-[10px] font-black bg-red-500/10 py-1 rounded-lg uppercase">{loginError.msg}</p>}
                     <button onClick={() => handleLoginJogador(j.id)} className="w-full py-2 bg-purple-600 rounded-xl text-white font-black text-[9px] uppercase tracking-widest">OK 🚀</button>
                   </div>
@@ -343,7 +343,7 @@ export default function GameDetail() {
              <div className="bg-slate-800/40 p-4 sm:p-6 rounded-[2.5rem] border border-dashed border-slate-700">
                {!qrCobranca ? (
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <input type="number" placeholder={T.receive} className="flex-1 bg-slate-900 p-5 rounded-3xl text-white font-black outline-none ring-1 ring-slate-800 focus:ring-emerald-500 transition-all text-center sm:text-left" onChange={(e) => setPinInput(e.target.value)} />
+                    <input type="number" inputMode="numeric" pattern="[0-9]*" placeholder={T.receive} className="flex-1 bg-slate-900 p-5 rounded-3xl text-white font-black outline-none ring-1 ring-slate-800 focus:ring-emerald-500 transition-all text-center sm:text-left" onChange={(e) => setPinInput(e.target.value)} />
                     <button onClick={() => setQrCobranca({valor: Number(pinInput), de_id: isAdmin ? null : loggedInPlayer.id, de_nome: loggedInPlayer.name})} className="bg-emerald-600 p-5 sm:px-6 rounded-3xl font-black text-white active:scale-95 shadow-xl shadow-emerald-900/30 uppercase text-xs sm:text-base">{T.generate}</button>
                   </div>
                ) : (

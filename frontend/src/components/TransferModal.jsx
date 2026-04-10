@@ -111,6 +111,8 @@ export default function TransferModal({ players, loggedInPlayer, isAdmin, onClos
                 <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 font-black text-xl italic group-focus-within:text-purple-500 transition-colors">M$</span>
                 <input
                   type="number"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={amount}
                   autoFocus
                   onChange={(e) => setAmount(e.target.value)}
@@ -160,6 +162,8 @@ export default function TransferModal({ players, loggedInPlayer, isAdmin, onClos
                 <div className="relative">
                    <input 
                       type="password" 
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       maxLength={4} 
                       autoFocus
                       placeholder="••••"

@@ -143,11 +143,11 @@ export default function Games() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                <div>
                   <label className="text-[10px] text-slate-500 font-bold uppercase ml-2 tracking-widest leading-none">{T.playerInitial}</label>
-                  <input type="number" value={playerInitialBalance} onChange={(e) => setPlayerInitialBalance(e.target.value)} className="w-full bg-slate-900 p-4 rounded-2xl text-white font-black text-center" />
+                  <input type="number" inputMode="numeric" pattern="[0-9]*" value={playerInitialBalance} onChange={(e) => setPlayerInitialBalance(e.target.value)} className="w-full bg-slate-900 p-4 rounded-2xl text-white font-black text-center" />
                </div>
                <div>
                   <label className="text-[10px] text-slate-500 font-bold uppercase ml-2 tracking-widest leading-none">{T.managerPassLabel}</label>
-                  <input type="password" value={managerPassword} onChange={(e) => setManagerPassword(e.target.value)} placeholder={T.pinExample} className="w-full bg-slate-900 p-4 rounded-2xl text-white font-black text-center outline-none focus:ring-1 ring-amber-500 shadow-inner" />
+                  <input type="password" inputMode="numeric" pattern="[0-9]*" value={managerPassword} onChange={(e) => setManagerPassword(e.target.value)} placeholder={T.pinExample} className="w-full bg-slate-900 p-4 rounded-2xl text-white font-black text-center outline-none focus:ring-1 ring-amber-500 shadow-inner" />
                </div>
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function Games() {
               {showPinInput === game.id ? (
                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
                     <div className="flex flex-col gap-2">
-                       <input value={gamePin} onChange={(e) => setGamePin(e.target.value)} autoFocus placeholder={T.pinPlaceholder} className="w-full bg-slate-900 p-5 rounded-3xl text-white text-center font-black italic outline-none ring-1 ring-purple-600 shadow-inner tracking-[0.4em]" />
+                       <input type="password" inputMode="numeric" pattern="[0-9]*" value={gamePin} onChange={(e) => setGamePin(e.target.value)} autoFocus placeholder={T.pinPlaceholder} className="w-full bg-slate-900 p-5 rounded-3xl text-white text-center font-black italic outline-none ring-1 ring-purple-600 shadow-inner tracking-[0.4em]" />
                        <button onClick={() => handleEntrar(game.id)} className="w-full py-4 bg-purple-600 rounded-2xl font-black text-white shadow-xl shadow-purple-900/40 hover:bg-purple-500 transition-colors uppercase text-xs tracking-widest italic">{T.accessVault} 🚀</button>
                     </div>
                     {errorStatus[game.id] && <p className="text-red-500 text-[10px] font-black uppercase text-center animate-bounce">{errorStatus[game.id]}</p>}
