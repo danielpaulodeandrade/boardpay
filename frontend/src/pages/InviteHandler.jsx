@@ -1,9 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function InviteHandler() {
   const { id, pin } = useParams();
   const navigate = useNavigate();
+
+  const [lang] = useState(localStorage.getItem('bp_lang') || 'pt');
+  const TM = {
+    pt: { entering: "Entrando na Mesa..." },
+    en: { entering: "Entering the Table..." },
+    es: { entering: "Entrando a la Mesa..." }
+  }[lang] || { entering: "Entrando na Mesa..." };
 
   useEffect(() => {
     console.log("Processando Convite:", { id, pin });
@@ -14,7 +21,7 @@ export default function InviteHandler() {
       
       // Pequeno delay para garantir o storage antes de navegar
       setTimeout(() => {
-        navigate(`/jogo/${id}`);
+        navigate(`/game/${id}`);
       }, 100);
     } else {
       navigate('/');
@@ -24,7 +31,7 @@ export default function InviteHandler() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
       <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-slate-500 font-black uppercase text-xs tracking-widest animate-pulse">Entrando na Mesa...</p>
+      <p className="text-slate-500 font-black uppercase text-xs tracking-widest animate-pulse">{TM.entering}</p>
     </div>
   );
 }

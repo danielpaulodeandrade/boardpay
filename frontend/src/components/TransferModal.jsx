@@ -1,40 +1,73 @@
 import { useState, useEffect } from "react";
+import translations from "../translations";
 
-export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onClose, onTransfer }) {
-  const [valor, setValor] = useState("");
-  const [de, setDe] = useState("");
-  const [para, setPara] = useState("");
+export default function TransferModal({ players, loggedInPlayer, isAdmin, onClose, onTransfer }) {
+  const [amount, setAmount] = useState("");
+  const [fromId, setFromId] = useState("");
+  const [toId, setToId] = useState("");
   
-  // Controle de Confirmação de PIN
+  const [lang] = useState(localStorage.getItem('bp_lang') || 'pt');
+  const T = translations[lang] || translations.pt;
+  
+  const T_MODAL = {
+    pt: {
+      validatePin: "Validar PIN", payment: "Pagamento", security: "Segurança BoardPay",
+      instant: "Instantâneo", validAmount: "Digite um valor válido.", selectDest: "Selecione o destino.",
+      sameDest: "Origem e destino iguais.", enterPin: "Digite seu PIN de 4 dígitos.",
+      payer: "Pagador", bank: "🏦 BANCO CENTRAL", you: "VOCÊ",
+      receiver: "Recebedor", select: "Selecione...", confirmDest: "CONFIRMAR DESTINO 🚀",
+      authTransfer: "Autorizando transferência de", to: "para",
+      back: "VOLTAR", payNow: "PAGAR AGORA 💸"
+    },
+    en: {
+      validatePin: "Validate PIN", payment: "Payment", security: "BoardPay Security",
+      instant: "Instant", validAmount: "Enter a valid amount.", selectDest: "Select destination.",
+      sameDest: "Same origin and destination.", enterPin: "Enter your 4-digit PIN.",
+      payer: "Payer", bank: "🏦 CENTRAL BANK", you: "YOU",
+      receiver: "Receiver", select: "Select...", confirmDest: "CONFIRM DESTINATION 🚀",
+      authTransfer: "Authorizing transfer of", to: "to",
+      back: "BACK", payNow: "PAY NOW 💸"
+    },
+    es: {
+      validatePin: "Validar PIN", payment: "Pago", security: "Seguridad BoardPay",
+      instant: "Instantáneo", validAmount: "Ingrese un monto válido.", selectDest: "Seleccione destino.",
+      sameDest: "Mismo origen y destino.", enterPin: "Ingrese su PIN de 4 dígitos.",
+      payer: "Pagador", bank: "🏦 BANCO CENTRAL", you: "TÚ",
+      receiver: "Receptor", select: "Seleccionar...", confirmDest: "CONFIRMAR DESTINO 🚀",
+      authTransfer: "Autorizando transferencia de", to: "a",
+      back: "VOLVER", payNow: "PAGAR AHORA 💸"
+    }
+  };
+  const TM = T_MODAL[lang] || T_MODAL.pt;
+
   const [showPinConfirm, setShowPinConfirm] = useState(false);
   const [pinConfirmInput, setPinConfirmInput] = useState("");
 
   useEffect(() => {
     if (isAdmin) {
-      setDe("BANCO");
-    } else if (loggedInJogador) {
-      setDe(loggedInJogador.id);
+      setFromId("BANK");
+    } else if (loggedInPlayer) {
+      setFromId(loggedInPlayer.id);
     }
-  }, [isAdmin, loggedInJogador]);
+  }, [isAdmin, loggedInPlayer]);
 
   const handleInitialSubmit = (e) => {
     e.preventDefault();
-    if (!valor || valor <= 0) {
-      alert("Digite um valor válido.");
+    if (!amount || amount <= 0) {
+      alert(TM.validAmount);
       return;
     }
-    if (!de || !para) {
-      alert("Selecione o destino.");
+    if (!fromId || !toId) {
+      alert(TM.selectDest);
       return;
     }
-    if (de === para) {
-      alert("Origem e destino iguais.");
+    if (fromId === toId) {
+      alert(TM.sameDest);
       return;
     }
 
-    // Se for Admin, passa direto. Se for Jogador, pede o PIN.
     if (isAdmin) {
-      onTransfer({ de, para, valor });
+      onTransfer({ de: fromId, para: toId, valor: amount });
     } else {
       setShowPinConfirm(true);
     }
@@ -43,10 +76,10 @@ export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onC
   const handleFinalConfirm = (e) => {
     e.preventDefault();
     if (pinConfirmInput.length < 4) {
-      alert("Digite seu PIN de 4 dígitos.");
+      alert(TM.enterPin);
       return;
     }
-    onTransfer({ de, para, valor, pin_pessoal: pinConfirmInput });
+    onTransfer({ de: fromId, para: toId, valor: amount, personal_pin: pinConfirmInput });
   };
 
   return (
@@ -57,10 +90,10 @@ export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onC
         <div className="flex justify-between items-center mb-8">
           <div className="ml-1">
             <h2 className="text-3xl font-black text-white leading-tight">
-               {showPinConfirm ? "Validar PIN" : "Pagamento"}
+               {showPinConfirm ? TM.validatePin : TM.payment}
             </h2>
             <p className="text-purple-400 text-[10px] uppercase tracking-[0.3em] font-black italic opacity-80">
-               {showPinConfirm ? "Segurança BoardPay" : "Instantâneo"}
+               {showPinConfirm ? TM.security : TM.instant}
             </p>
           </div>
           <button 
@@ -74,14 +107,13 @@ export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onC
         {!showPinConfirm ? (
           <form onSubmit={handleInitialSubmit} className="space-y-6">
             <div className="space-y-6">
-              {/* VALOR */}
               <div className="relative group">
                 <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 font-black text-xl italic group-focus-within:text-purple-500 transition-colors">M$</span>
                 <input
                   type="number"
-                  value={valor}
+                  value={amount}
                   autoFocus
-                  onChange={(e) => setValor(e.target.value)}
+                  onChange={(e) => setAmount(e.target.value)}
                   placeholder="0,00"
                   className="w-full bg-slate-900 border border-slate-700/50 pl-16 pr-6 py-6 rounded-3xl text-4xl font-black text-white outline-none focus:ring-2 ring-purple-600/50 transition-all text-center placeholder:opacity-20"
                 />
@@ -89,24 +121,24 @@ export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onC
 
               <div className="grid grid-cols-1 gap-4">
                 <div className="bg-slate-900/50 p-4 rounded-2xl border border-slate-700/30">
-                  <label className="block text-slate-600 text-[9px] uppercase tracking-widest font-black mb-1 px-1">Pagador</label>
+                  <label className="block text-slate-600 text-[9px] uppercase tracking-widest font-black mb-1 px-1">{TM.payer}</label>
                   <div className="flex items-center gap-3 p-1">
-                     <span className="text-2xl">{isAdmin ? '🏦' : (jogadores.find(j => j.id === de)?.avatar || '👤')}</span>
-                     <span className="text-white font-black uppercase italic tracking-tighter">{isAdmin ? 'BANCO CENTRAL' : (jogadores.find(j => j.id === de)?.nome || 'VOCÊ')}</span>
+                     <span className="text-2xl">{isAdmin ? '🏦' : (players.find(j => j.id === fromId)?.avatar || '👤')}</span>
+                     <span className="text-white font-black uppercase italic tracking-tighter">{isAdmin ? TM.bank.replace('🏦 ', '') : (players.find(j => j.id === fromId)?.name || TM.you)}</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 text-[9px] uppercase tracking-widest font-black mb-2 ml-2">Recebedor:</label>
+                  <label className="block text-slate-400 text-[9px] uppercase tracking-widest font-black mb-2 ml-2">{TM.receiver}:</label>
                   <select 
-                    value={para} 
-                    onChange={(e) => setPara(e.target.value)}
+                    value={toId} 
+                    onChange={(e) => setToId(e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700/50 p-5 rounded-2xl text-white font-black uppercase italic tracking-tight outline-none appearance-none focus:ring-2 ring-purple-500 shadow-xl"
                   >
-                    <option value="">Selecione...</option>
-                    {!isAdmin && <option value="BANCO" className="text-emerald-400">🏦 BANCO CENTRAL</option>}
-                    {jogadores.filter(j => j.id !== de).map(j => (
-                        <option key={j.id} value={j.id}>{j.avatar} {j.nome}</option>
+                    <option value="">{TM.select}</option>
+                    {!isAdmin && <option value="BANK" className="text-emerald-400">{TM.bank}</option>}
+                    {players.filter(j => j.id !== fromId).map(j => (
+                        <option key={j.id} value={j.id}>{j.avatar} {j.name}</option>
                     ))}
                   </select>
                 </div>
@@ -114,16 +146,16 @@ export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onC
             </div>
 
             <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 py-5 rounded-3xl text-white font-black text-lg shadow-xl shadow-purple-900/40 active:scale-[0.98] mt-6 uppercase tracking-widest">
-              CONFIRMAR DESTINO 🚀
+              {TM.confirmDest}
             </button>
           </form>
         ) : (
           <form onSubmit={handleFinalConfirm} className="space-y-6 animate-in fade-in zoom-in-95">
              <div className="p-6 bg-slate-900 rounded-[2.5rem] border border-slate-700 shadow-inner text-center space-y-4">
                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed">
-                   Autorizando transferência de <br/>
-                   <span className="text-white font-black text-lg">M$ {Number(valor).toLocaleString()}</span> <br/>
-                   para <span className="text-purple-400 font-black italic">{para === 'BANCO' ? 'BANCO CENTRAL' : jogadores.find(j => j.id === para)?.nome}</span>
+                   {TM.authTransfer} <br/>
+                   <span className="text-white font-black text-lg">M$ {Number(amount).toLocaleString()}</span> <br/>
+                   {TM.to} <span className="text-purple-400 font-black italic">{toId === 'BANK' ? TM.bank.replace('🏦 ', '') : players.find(j => j.id === toId)?.name}</span>
                 </p>
                 <div className="relative">
                    <input 
@@ -144,13 +176,13 @@ export default function TransferModal({ jogadores, loggedInJogador, isAdmin, onC
                   onClick={() => setShowPinConfirm(false)}
                   className="flex-1 py-5 bg-slate-700 rounded-3xl text-white font-black uppercase text-xs tracking-widest"
                 >
-                  VOLTAR
+                  {TM.back}
                 </button>
                 <button 
                   type="submit" 
                   className="flex-[2] py-5 bg-emerald-600 rounded-3xl text-white font-black uppercase text-xs tracking-widest shadow-xl shadow-emerald-900/40 active:scale-95 transition-all"
                 >
-                  PAGAR AGORA 💸
+                  {TM.payNow}
                 </button>
              </div>
           </form>
