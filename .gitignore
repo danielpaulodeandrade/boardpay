@@ -54,6 +54,3 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-
-# ======== ESPECÍFICO DO PROJETO ========
-backend/requirements.txt
