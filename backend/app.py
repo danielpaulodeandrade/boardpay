@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
+import sys
 
 from infrastructure.database import db
 from adapters.outbound.repositories.game_repository import GameRepository
@@ -22,15 +23,37 @@ from domain.exceptions import (
 )
 
 
+def _get_assets_base() -> str:
+    """
+    Returns the base directory for read-only assets (frontend/build).
+    - Bundled (.exe): PyInstaller extracts assets to sys._MEIPASS (temp dir).
+    - Development: relative to this file (backend/).
+    """
+    if getattr(sys, "frozen", False):
+        return sys._MEIPASS  # type: ignore[attr-defined]
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _get_instance_dir() -> str:
+    """
+    Returns the directory for mutable data (SQLite database).
+    - Bundled (.exe): next to the .exe so data persists across runs.
+    - Development: backend/instance/ as usual.
+    """
+    if getattr(sys, "frozen", False):
+        return os.path.join(os.path.dirname(sys.executable), "instance")
+    backend_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(backend_dir, "instance")
+
+
 def create_app() -> Flask:
-    # instance_path fixo: sempre em backend/instance/, independente do CWD
-    _backend_dir = os.path.dirname(os.path.abspath(__file__))
-    _instance_path = os.path.join(_backend_dir, "instance")
+    _base = _get_assets_base()
+    _instance_path = _get_instance_dir()
 
     app = Flask(
         __name__,
         instance_path=_instance_path,
-        static_folder=os.path.join(_backend_dir, "../frontend/build"),
+        static_folder=os.path.join(_base, "frontend", "build"),
         static_url_path="/",
     )
     CORS(app)
@@ -120,4 +143,6 @@ def create_app() -> Flask:
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # debug=False when bundled: reloader causes issues with PyInstaller
+    is_dev = not getattr(sys, "frozen", False)
+    app.run(debug=is_dev, host="0.0.0.0", port=5000)

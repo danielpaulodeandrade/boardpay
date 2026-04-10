@@ -54,3 +54,9 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# ======== PYINSTALLER / BUILD ========
+dist/
+build/
+*.spec
+scripts/boardpay.ico
