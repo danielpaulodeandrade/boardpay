@@ -25,12 +25,17 @@ ICON_ICO = SCRIPTS_DIR / "boardpay.ico"
 
 # ─── Helpers ───────────────────────────────────────────────────────────────────
 
-def run(cmd, cwd=None):
-    """Executa um comando e exibe o que esta rodando.
-    shell=True e necessario no Windows para resolver .cmd (npm.cmd, etc)."""
+def run_proc(cmd, cwd=None):
+    """Executa um processo diretamente (sem shell). Correto para Python/PyInstaller."""
     display = " ".join(str(c) for c in cmd)
     print(f"\n🔨  {display}")
-    subprocess.run(cmd, cwd=cwd, check=True, shell=(sys.platform == "win32"))
+    subprocess.run([str(c) for c in cmd], cwd=cwd, check=True)
+
+
+def run_shell(cmd_str, cwd=None):
+    """Executa um comando via shell. Necessario para npm.cmd no Windows."""
+    print(f"\n🔨  {cmd_str}")
+    subprocess.run(cmd_str, cwd=cwd, check=True, shell=True)
 
 
 def ensure_pip_package(import_name: str, pip_name: str = None):
@@ -40,7 +45,7 @@ def ensure_pip_package(import_name: str, pip_name: str = None):
         __import__(import_name)
     except ImportError:
         print(f"   📦 Instalando {pip_name}...")
-        run([sys.executable, "-m", "pip", "install", pip_name])
+        run_proc([sys.executable, "-m", "pip", "install", pip_name])
 
 
 # ─── Etapas do Build ───────────────────────────────────────────────────────────
@@ -68,7 +73,8 @@ def convert_icon():
 def build_frontend():
     """Compila o React para gerar frontend/build."""
     print("\n⚛️   Compilando frontend React...")
-    run(["npm", "run", "build"], cwd=FRONTEND_DIR)
+    # npm é um .cmd no Windows — precisa de shell=True ou chamada explícita ao .cmd
+    run_shell("npm run build", cwd=FRONTEND_DIR)
     print("   ✅ Frontend compilado!")
 
 
@@ -92,29 +98,29 @@ def build_exe(icon_path):
 
     frontend_build = FRONTEND_DIR / "build"
 
-    # No Windows: separador é ";" para --add-data
-    add_data_sep = ";" if sys.platform == "win32" else ":"
-    add_data_frontend = f"{frontend_build}{add_data_sep}frontend/build"
+    # Destino plano 'frontend_build' dentro do bundle (sys._MEIPASS/frontend_build/)
+    # Evita ambiguidades com separadores de path em subdiretorios.
+    # No Windows: separador e ";", no Linux/Mac: ":"
+    sep = ";" if sys.platform == "win32" else ":"
+    add_data = f"{frontend_build}{sep}frontend_build"
 
     cmd = [
         sys.executable, "-m", "PyInstaller",
-        "--onefile",                          # Um único .exe
-        "--console",                          # Mantém terminal aberto (ver IP e logs)
+        "--onefile",                     # Um único .exe
+        "--console",                     # Terminal aberto para ver IP e logs
         "--name", "BoardPay",
-        "--add-data", add_data_frontend,      # Inclui o build React dentro do .exe
-        "--paths", str(BACKEND_DIR),          # Resolve imports relativos do backend
-        # Hidden imports para SQLAlchemy/Flask que PyInstaller pode perder
+        "--add-data", add_data,          # Embute o build React no bundle
+        "--paths", str(BACKEND_DIR),     # Resolve imports relativos do backend
         "--hidden-import", "sqlalchemy.dialects.sqlite",
         "--hidden-import", "flask_cors",
-        "--hidden-import", "engineio.async_drivers.threading",
-        # Ponto de entrada
-        str(BACKEND_DIR / "app.py"),
+        str(BACKEND_DIR / "app.py"),     # Ponto de entrada
     ]
 
     if icon_path and icon_path.exists():
         cmd += ["--icon", str(icon_path)]
 
-    run(cmd, cwd=ROOT_DIR)
+    # run_proc: SEM shell=True — essencial para que --add-data seja parseado corretamente
+    run_proc(cmd, cwd=ROOT_DIR)
 
 
 def report_result():

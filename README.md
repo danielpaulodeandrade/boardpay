@@ -170,7 +170,32 @@ cd ..
 
 ---
 
-## ▶️ How to Run
+## 📦 Portable Version (No Installation Required)
+
+The easiest way to run BoardPay is to download the pre-built **`BoardPay.exe`** from the [GitHub Releases](https://github.com/danielpaulodeandrade/boardpay/releases) page.
+
+### How to use
+1. Download `BoardPay.exe` — place it **anywhere** (Downloads, Desktop, a USB drive, etc.).
+2. Double-click to run — a terminal window will open showing your local network IP.
+3. Access `http://localhost:5000` on the same machine, or `http://YOUR_IP:5000` on any mobile device connected via hotspot.
+
+### Data persistence
+The first time you run the EXE, it automatically creates an `instance/` folder **in the same directory as the EXE**, containing the `boardpay.db` database:
+
+```
+📁 Wherever BoardPay.exe lives
+├── BoardPay.exe
+└── instance/
+    └── boardpay.db   ← created automatically on first run
+```
+
+> **Your game data persists** between sessions as long as `instance/` stays with `BoardPay.exe`.
+> To back up or transfer your games, copy both `BoardPay.exe` **and** the `instance/` folder together.
+> To start fresh, simply delete `instance/boardpay.db`.
+
+---
+
+## ▶️ How to Run (From Source)
 
 ### Production (Recommended for playing)
 ```bash
@@ -217,6 +242,11 @@ Then run `npm run build` again.
 
 ## 🧹 Maintenance
 
+### Portable EXE
+- **Reset data:** Delete `instance/boardpay.db` (next to the EXE) and restart.
+- **Backup games:** Copy both `BoardPay.exe` and the `instance/` folder.
+
+### From Source (Development)
 - **Reset the database:** Delete `backend/instance/boardpay.db` and restart the server.
 - **Force frontend rebuild:** `cd frontend && npm run build`
 - **The database is created automatically** in `backend/instance/` on first run.

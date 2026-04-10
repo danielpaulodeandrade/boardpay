@@ -27,7 +27,9 @@ def _get_assets_base() -> str:
     """
     Returns the base directory for read-only assets (frontend/build).
     - Bundled (.exe): PyInstaller extracts assets to sys._MEIPASS (temp dir).
-    - Development: relative to this file (backend/).
+      The --add-data destination is 'frontend_build', so the path is:
+      sys._MEIPASS/frontend_build/
+    - Development: the project root's frontend/build/ relative to backend/app.py.
     """
     if getattr(sys, "frozen", False):
         return sys._MEIPASS  # type: ignore[attr-defined]
@@ -50,10 +52,17 @@ def create_app() -> Flask:
     _base = _get_assets_base()
     _instance_path = _get_instance_dir()
 
+    # Bundled: assets are at sys._MEIPASS/frontend_build/ (matches --add-data dest)
+    # Dev:     assets are at backend/../frontend/build/
+    if getattr(sys, "frozen", False):
+        _static_folder = os.path.join(_base, "frontend_build")
+    else:
+        _static_folder = os.path.join(_base, "..", "frontend", "build")
+
     app = Flask(
         __name__,
         instance_path=_instance_path,
-        static_folder=os.path.join(_base, "frontend", "build"),
+        static_folder=_static_folder,
         static_url_path="/",
     )
     CORS(app)

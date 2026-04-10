@@ -170,7 +170,32 @@ cd ..
 
 ---
 
-## ▶️ Como Rodar
+## 📦 Versão Portátil (Sem Necessidade de Instalação)
+
+A forma mais simples de usar o BoardPay é baixar o **`BoardPay.exe`** pré-compilado na página de [GitHub Releases](https://github.com/danielpaulodeandrade/boardpay/releases).
+
+### Como usar
+1. Baixe o `BoardPay.exe` e coloque-o **em qualquer lugar** (Downloads, Área de Trabalho, pendrive, etc.).
+2. Dê dois cliques para executar — uma janela de terminal vai abrir mostrando o IP da sua rede local.
+3. Acesse `http://localhost:5000` na mesma máquina, ou `http://SEU_IP:5000` em qualquer celular conectado via hotspot.
+
+### Persistência dos dados
+Na primeira execução, o sistema cria automaticamente uma pasta `instance/` **no mesmo diretório onde o `.exe` está**, contendo o banco de dados `boardpay.db`:
+
+```
+📁 Onde o BoardPay.exe estiver
+├── BoardPay.exe
+└── instance/
+    └── boardpay.db   ← criado automaticamente na primeira execução
+```
+
+> **Seus dados persistem** entre sessões enquanto a pasta `instance/` estiver junto ao `BoardPay.exe`.
+> Para fazer backup ou transferir suas partidas, copie o `BoardPay.exe` **e** a pasta `instance/` juntos.
+> Para começar do zero, basta apagar o `instance/boardpay.db`.
+
+---
+
+## ▶️ Como Rodar (A partir do código-fonte)
 
 ### Produção (Recomendado para jogar)
 ```bash
@@ -217,6 +242,11 @@ Depois faça `npm run build` novamente.
 
 ## 🧹 Manutenção
 
+### Versão Portátil (.exe)
+- **Resetar dados:** Apague `instance/boardpay.db` (pasta ao lado do .exe) e reinicie.
+- **Fazer backup:** Copie o `BoardPay.exe` e a pasta `instance/` juntos.
+
+### A partir do código-fonte (Desenvolvimento)
 - **Resetar o banco:** Delete `backend/instance/boardpay.db` e reinicie o servidor.
 - **Forçar rebuild do frontend:** `cd frontend && npm run build`
 - **O banco é criado automaticamente** em `backend/instance/` na primeira execução.
