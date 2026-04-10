@@ -1,279 +1,88 @@
-# 🎲 BoardPay — Sistema de Gestão de Transações para Jogos
+# 🎲 BoardPay — Sistema Financeiro para Jogos de Tabuleiro
 
-## 📌 Visão Geral
-
-O **BoardPay** é uma aplicação fullstack desenvolvida com o objetivo de simular um sistema financeiro simplificado para jogos (ex: Banco Imobiliário), rodando em um servidor local acessível via Wi-Fi (hotspot), conhecido como servidor local offline via LAN (Local Network), permitindo:
-
-- Criação de jogos
-- Gerenciamento de jogadores
-- Controle de saldo
-- Transferências entre jogadores
-
-O projeto foi construído com foco em:
-
-- Arquitetura modular
-- Boas práticas de backend e frontend
-- Evolução futura para sistemas mais complexos (ex: IA, trading, automação)
+O **BoardPay** é uma solução digital premium para gerenciar a economia de seus jogos de tabuleiro (como Banco Imobiliário) de forma offline, segura e moderna. Esqueça as notas de papel que rasgam ou somem; transforme seu celular em um banco digital completo.
 
 ---
 
-## 🧱 Arquitetura
-
-### 🔙 Backend (Python + Flask)
-
-- Framework: Flask
-- ORM: SQLAlchemy
-- Banco: SQLite (dev)
-- API REST
-
-#### Estrutura:
-
-```
-backend/
- ├── app.py
- ├── models.py
- ├── database.py
- └── boardpay.db
-```
+## 🎯 Finalidade
+Permitir que grupos de amigos joguem qualquer jogo que envolva dinheiro usando um sistema de "Fake PIX" e transações digitais, operando em uma rede local (Hotspot) sem necessidade de internet.
 
 ---
 
-### 🎨 Frontend (React)
+## ✨ Funcionalidades Principais
 
-- React (Create React App)
-- Tailwind CSS (em configuração)
-- Comunicação via Fetch API
+### 🏦 Para o Gerente (Banco)
+*   **Controle Total:** Criação de mesas com saldos iniciais configuráveis.
+*   **Gestão de PIN:** Visualização do PIN de entrada da mesa e PINs individuais dos jogadores.
+*   **Modo Stealth (QR Global):** Ative ou desative as funções de QR Code de todos os jogadores com um clique.
+*   **Dashboard Administrativo:** Interface dedicada para monitorar o caixa do banco e todas as movimentações.
 
-#### Estrutura:
-
-```
-frontend/
- ├── src/
- │    ├── components/
- │    ├── pages/
- │    ├── services/
- │    ├── App.jsx
- │    └── index.css
-```
+### 👤 Para os Jogadores
+*   **Login Persistente:** O sistema lembra sua mesa e seu acesso, evitando redigitação de PIN.
+*   **Fake PIX (QR Code):** Pague e receba valores escaneando QRs, simulando a experiência de um banco real.
+*   **Segurança em Duas Etapas:** PIN de entrada para a mesa e PIN pessoal de 4 dígitos para autorizar transferências.
+*   **Histórico em Tempo Real:** Extrato detalhado de todas as suas entradas e saídas.
 
 ---
 
-## 🔌 Comunicação
-
-- Frontend: http://localhost:3000
-
-- Backend: http://localhost:5000
-
-- Comunicação via REST API (JSON)
-
-- CORS habilitado no backend
+## 🛠️ Tecnologias
+*   **Backend:** Python + Flask + SQLAlchemy (SQLite).
+*   **Frontend:** React + Tailwind CSS (UI Moderna e Responsiva).
+*   **Segurança:** PINs individuais e isolamento de sessões por mesa.
+*   **Infra:** Preparado para rodar em rede local (0.0.0.0).
 
 ---
 
-## 🧠 Modelagem de Dados
+## 🚀 Como Instalar e Rodar
 
-### 🟢 Jogo
+### 1. Requisitos
+*   Python 3.10+
+*   Node.js 18+
 
-- id
-- nome
-- data_criacao
-
-### 🔵 Jogador
-
-- id
-- nome
-- saldo
-- jogo_id
-
-### 🟣 Transacao
-
-- id
-- valor
-- de_jogador_id
-- para_jogador_id
-- jogo_id
-- criado_em
-
----
-
-## 📡 Endpoints implementados
-
-### 🎲 Jogos
-
-#### Criar jogo
-
-```
-POST /jogos
-```
-
-Body:
-
-```json
-{
-  "nome": "Banco Imobiliario"
-}
-```
-
----
-
-#### Listar jogos
-
-```
-GET /jogos
-```
-
-Resposta:
-
-```json
-[
-  {
-    "id": 1,
-    "nome": "Banco Imobiliario",
-    "data_criacao": "2026-04-06T15:30:00"
-  }
-]
-```
-
----
-
-## ⚠️ Problemas encontrados (e resolvidos)
-
-### ❌ CORS bloqueando requisições
-
-✔️ Resolvido com `flask-cors`
-
----
-
-### ❌ Datas inválidas no frontend (`Invalid Date`)
-
-✔️ Causa: backend não retornava `data_criacao`
-✔️ Solução: uso de `.isoformat()`
-
----
-
-### ❌ Conflito de portas (3000)
-
-✔️ Backend movido para porta 5000
-
----
-
-### ❌ Problemas com dependências (React / Tailwind)
-
-✔️ Reinstalação e fix de versões
-
----
-
-## 🎨 UI Atual
-
-A interface já possui:
-
-- Layout dark moderno
-- Lista de jogos
-- Criação de jogos
-- Estrutura preparada para:
-  - Cards
-  - Botões reutilizáveis
-  - Design system
-
----
-
-## 🚧 Em desenvolvimento
-
-### 🔜 Próximas features
-
-- Tela de detalhe do jogo
-- Listagem de jogadores
-- Transferências entre jogadores
-- Saldo total consolidado
-- Histórico de transações (extrato)
-
----
-
-## 🚀 Roadmap futuro
-
-### 🔥 Curto prazo
-
-- UI estilo banco digital (Nubank-like)
-- Modal de transferências
-- Feedback visual (toasts)
-
----
-
-### 🧠 Médio prazo
-
-- Sistema de autenticação
-- Multi-jogos simultâneos
-- Persistência robusta (PostgreSQL)
-
----
-
-### 🤖 Longo prazo
-
-- Integração com IA
-- Análise de comportamento financeiro
-- Sistema de simulação e estratégia (base para trading AI)
-
----
-
-## 🧪 Como rodar o projeto
-
-### Backend
-
+### 2. Configuração do Backend
 ```bash
 cd backend
+# Crie um ambiente virtual (opcional mas recomendado)
+python -m venv venv
+# No Windows:
+.\venv\Scripts\activate
+# Instale as dependências
+pip install -r requirements.txt
+# Inicie o servidor
 python app.py
 ```
 
----
-
-### Frontend
-
+### 3. Configuração do Frontend
 ```bash
 cd frontend
+# Instale as dependências
 npm install
-npm start
+# Gere o build de produção (para rodar rápido e offline)
+npm run build
 ```
 
 ---
 
-## 📌 Observações
+## 🧪 Como Testar
 
-- Projeto em fase inicial, porém com base sólida
-- Código já estruturado para evolução
-- Foco em aprendizado + portfólio + possível produto real
-
----
-
-## 🤝 Objetivo do Review
-
-Solicitamos análise do projeto considerando:
-
-- Estrutura da arquitetura
-- Organização do código
-- Boas práticas aplicadas
-- Possíveis melhorias
-- Escalabilidade futura
+1.  **Inicie o Servidor:** Com o backend rodando, ele informará seu IP local (ex: `192.168.0.11:5000`).
+2.  **Acesse no Navegador:** 
+    *   No PC (Host): Acesse `localhost:5000`.
+    *   No Celular: Conecte no mesmo Wi-Fi e acesse `http://SEU_IP:5000`.
+3.  **Fluxo de Teste:**
+    *   Crie uma mesa no PC. Anote o **PIN da Sala** (6 dígitos).
+    *   No celular, escolha a mesa e digite o PIN.
+    *   Logue com um jogador usando o **PIN Pessoal** (gerado automaticamente, visível no painel do Gerente).
+    *   Tente fazer uma transferência e veja o modal de confirmação de segurança.
+    *   Experimente desativar o **QR MODE** no PC e veja a função sumir no celular instantaneamente.
 
 ---
 
-## 👨‍💻 Autor
-
-Projeto desenvolvido como parte de evolução técnica em:
-
-- Fullstack development
-- Arquitetura de sistemas
-- Integração frontend/backend
+## 🧹 Manutenção
+*   Para resetar todos os jogos e configurações: Delete o arquivo `backend/boardpay.db`.
+*   O sistema limpa automaticamente sessões antigas quando uma mesa é deletada no servidor.
 
 ---
 
-## 💬 Status Atual
-
-✔️ Backend funcional
-✔️ API REST operante
-✔️ Frontend integrado
-✔️ Comunicação funcionando
-
-🚧 UI em evolução
-🚧 Funcionalidades avançadas em desenvolvimento
-
----
+## 👨‍💻 Desenvolvedor
+Projeto focado em UX Premium, Segurança Offline e Performance Mobile.

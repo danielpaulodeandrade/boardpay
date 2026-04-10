@@ -1,9 +1,23 @@
-# Python
+# ======== PYTHON / BACKEND ========
 __pycache__/
 venv/
 env/
 .env
 *.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache/
+.pytest_cache/
 
 # Banco de Dados
 *.db
@@ -11,13 +25,35 @@ env/
 instance/
 backend/instance/
 
-# Node / Frontend
+# ======== NODE / FRONTEND ========
 node_modules/
 dist/
 build/
+frontend/build/
 .npm/
+.eslintcache
+/.pnp
+.pnp.js
 
-# OS / Editor
+# Node Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node Testing
+/coverage
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ======== OS / EDITOR ========
 .DS_Store
+Thumbs.db
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# ======== ESPECÍFICO DO PROJETO ========
+backend/requirements.txt
