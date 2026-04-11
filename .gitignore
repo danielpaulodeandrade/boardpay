@@ -29,7 +29,7 @@ backend/instance/
 node_modules/
 dist/
 build/
-frontend/build/
+# frontend/build/ (Removido para permitir deploy offline/Android)
 .npm/
 .eslintcache
 /.pnp
