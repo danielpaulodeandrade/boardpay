@@ -170,7 +170,32 @@ cd ..
 
 ---
 
+## 📱 Android / Termux Deploy (Mobile Host)
+
+You can turn your Android phone into the game server (Host) to share with friends via Hotspot without needing a computer.
+
+1.  Install **Termux** on Android (preferably via F-Droid).
+2.  Open Termux and prepare the environment:
+    ```bash
+    pkg update && pkg upgrade -y
+    pkg install python git -y
+    ```
+3.  Clone the repository and enter the folder:
+    ```bash
+    git clone https://github.com/danielpaulodeandrade/boardpay.git
+    cd boardpay
+    ```
+4.  Install dependencies and start the server:
+    ```bash
+    pip install -r backend/requirements.txt
+    python backend/app.py
+    ```
+5.  Enable the phone's **Hotspot** and ask friends to connect to your Wi-Fi and access the IP shown in the terminal (e.g., `http://192.168.43.1:5000`).
+
+---
+
 ## 📦 Portable Version (No Installation Required)
+
 
 The easiest way to run BoardPay is to download the pre-built **`BoardPay.exe`** from the [GitHub Releases](https://github.com/danielpaulodeandrade/boardpay/releases) page.
 
